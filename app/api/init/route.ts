@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server'
 import { initializeDatabase } from '@/lib/db'
 
+// Force dynamic rendering - don't try to build this at build time
+export const dynamic = 'force-dynamic'
+
 export async function GET() {
   try {
     await initializeDatabase()

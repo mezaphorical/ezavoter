@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getExcuses, createExcuse, initializeDatabase } from '@/lib/db'
 
+// Force dynamic rendering - don't try to build this at build time
+export const dynamic = 'force-dynamic'
+
 let isInitialized = false
 
 export async function GET(request: NextRequest) {

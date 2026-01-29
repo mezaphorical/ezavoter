@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { voteOnExcuse } from '@/lib/db'
 
+// Force dynamic rendering - don't try to build this at build time
+export const dynamic = 'force-dynamic'
+
 export async function POST(
   request: NextRequest,
   { params }: { params: { id: string } }
