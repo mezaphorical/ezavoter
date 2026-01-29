@@ -14,6 +14,7 @@ export default function Home() {
   const [newExcuse, setNewExcuse] = useState('')
   const [sortBy, setSortBy] = useState<'votes' | 'recent'>('votes')
   const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     fetchExcuses()
@@ -43,6 +44,7 @@ export default function Home() {
     if (!newExcuse.trim()) return
 
     setIsLoading(true)
+    setError(null)
     try {
       const res = await fetch('/api/excuses', {
         method: 'POST',
@@ -52,10 +54,15 @@ export default function Home() {
 
       if (res.ok) {
         setNewExcuse('')
-        fetchExcuses()
+        await fetchExcuses()
+        setError(null)
+      } else {
+        const data = await res.json()
+        setError(data.error || 'Failed to submit excuse')
       }
     } catch (error) {
       console.error('Failed to submit excuse:', error)
+      setError('Failed to submit excuse. Please check your connection.')
     } finally {
       setIsLoading(false)
     }
@@ -102,6 +109,11 @@ export default function Home() {
         {/* Submit Section */}
         <div className="bg-white rounded-xl shadow-2xl p-6 md:p-8 mb-8">
           <h2 className="text-2xl font-bold text-gray-800 mb-4">Submit Your Excuse</h2>
+          {error && (
+            <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+              {error}
+            </div>
+          )}
           <form onSubmit={handleSubmit} className="space-y-4">
             <textarea
               value={newExcuse}
