@@ -8,13 +8,23 @@ export interface Excuse {
 }
 
 export async function getExcuses(sortBy: 'votes' | 'recent' = 'votes'): Promise<Excuse[]> {
-  const orderBy = sortBy === 'votes' ? 'votes DESC, created_at DESC' : 'created_at DESC'
+  let rows
 
-  const { rows } = await sql`
-    SELECT id, text, votes, created_at
-    FROM excuses
-    ORDER BY ${sql.raw(orderBy)}
-  `
+  if (sortBy === 'votes') {
+    const result = await sql`
+      SELECT id, text, votes, created_at
+      FROM excuses
+      ORDER BY votes DESC, created_at DESC
+    `
+    rows = result.rows
+  } else {
+    const result = await sql`
+      SELECT id, text, votes, created_at
+      FROM excuses
+      ORDER BY created_at DESC
+    `
+    rows = result.rows
+  }
 
   return rows as Excuse[]
 }
