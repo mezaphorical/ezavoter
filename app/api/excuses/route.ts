@@ -27,6 +27,12 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    // Initialize database on first request
+    if (!isInitialized) {
+      await initializeDatabase()
+      isInitialized = true
+    }
+
     const { text } = await request.json()
 
     if (!text || typeof text !== 'string' || text.trim().length === 0) {
