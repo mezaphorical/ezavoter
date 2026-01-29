@@ -1,8 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getExcuses, createExcuse } from '@/lib/db'
+import { getExcuses, createExcuse, initializeDatabase } from '@/lib/db'
+
+let isInitialized = false
 
 export async function GET(request: NextRequest) {
   try {
+    // Initialize database on first request
+    if (!isInitialized) {
+      await initializeDatabase()
+      isInitialized = true
+    }
+
     const searchParams = request.nextUrl.searchParams
     const sort = searchParams.get('sort') as 'votes' | 'recent' || 'votes'
 

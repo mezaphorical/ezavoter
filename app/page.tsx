@@ -22,10 +22,19 @@ export default function Home() {
   const fetchExcuses = async () => {
     try {
       const res = await fetch(`/api/excuses?sort=${sortBy}`)
+      if (!res.ok) {
+        throw new Error('Failed to fetch excuses')
+      }
       const data = await res.json()
-      setExcuses(data)
+      if (Array.isArray(data)) {
+        setExcuses(data)
+      } else {
+        console.error('Invalid response format:', data)
+        setExcuses([])
+      }
     } catch (error) {
       console.error('Failed to fetch excuses:', error)
+      setExcuses([])
     }
   }
 
